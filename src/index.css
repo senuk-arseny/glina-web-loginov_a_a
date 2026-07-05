@@ -1,0 +1,769 @@
+:root {
+  --kiln: #211d1a;
+  --kiln-2: #2b2622;
+  --ember: #c15b2e;
+  --ember-dark: #9c4622;
+  --sage: #8b9a73;
+  --sage-dark: #5f6b4c;
+  --clay-paper: #efe3d3;
+  --feldspar: #f5f1e8;
+  --muted: #948573;
+  --border-dark: #3a332c;
+  --oxide: #8b3a3a;
+  --oxide-bg: #3a2620;
+
+  --font-display: "Fraunces", serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--kiln);
+  color: var(--feldspar);
+  font-family: var(--font-body);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  margin: 0 0 8px;
+}
+
+em {
+  font-style: italic;
+  color: var(--ember);
+}
+
+/* ---------- Кабинет: шапка и общие элементы ---------- */
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border-dark);
+  background: var(--kiln-2);
+}
+.nav__logo {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.3rem;
+  color: var(--feldspar);
+}
+.nav nav {
+  display: flex;
+  flex: 1;
+  gap: 4px;
+}
+.nav a {
+  color: var(--muted);
+  text-decoration: none;
+  margin-right: 16px;
+  font-size: 0.95rem;
+}
+.nav a.active {
+  color: var(--ember);
+  font-weight: 500;
+}
+.nav-badge {
+  background: var(--ember);
+  color: var(--feldspar);
+  border-radius: 999px;
+  font-size: 0.7rem;
+  padding: 1px 7px;
+  margin-left: 4px;
+}
+.nav__user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px;
+}
+.muted {
+  color: var(--muted);
+}
+
+.filters {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  align-items: flex-end;
+}
+.filters label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+  gap: 4px;
+  color: var(--muted);
+}
+.filters input {
+  font-family: var(--font-mono);
+}
+
+/* Карточки — тёплый "бумажный" свет на тёмном фоне мастерской */
+.slot-list,
+.booking-list,
+.notification-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.slot-card {
+  display: block;
+  border: 1px solid var(--border-dark);
+  border-radius: 10px;
+  padding: 14px 16px;
+  text-decoration: none;
+  color: var(--kiln);
+  background: var(--clay-paper);
+}
+.slot-card--cancelled {
+  opacity: 0.6;
+}
+.slot-card__main {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+.slot-card__meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: var(--muted);
+  font-family: var(--font-mono);
+}
+
+.badge {
+  background: var(--kiln-2);
+  color: var(--feldspar);
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
+}
+.slot-card .badge,
+.booking-card .badge {
+  background: rgba(33, 29, 26, 0.08);
+  color: var(--kiln);
+}
+.badge--full,
+.slot-card .badge.badge--full,
+.booking-card .badge.badge--full {
+  background: var(--oxide);
+  color: var(--feldspar);
+}
+.badge--cancelled,
+.slot-card .badge.badge--cancelled,
+.booking-card .badge.badge--cancelled {
+  background: var(--oxide);
+  color: var(--feldspar);
+}
+.badge--regular,
+.slot-card .badge.badge--regular,
+.booking-card .badge.badge--regular {
+  background: var(--sage);
+  color: var(--kiln);
+}
+.badge--status-active {
+  background: var(--sage);
+  color: var(--kiln);
+}
+.badge--status-completed {
+  background: var(--muted);
+  color: var(--feldspar);
+}
+.badge--status-cancelled_by_client {
+  background: #d9c9b3;
+  color: var(--kiln);
+}
+.badge--status-cancelled_by_studio {
+  background: var(--oxide);
+  color: var(--feldspar);
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  row-gap: 8px;
+}
+.details-grid dt {
+  color: var(--muted);
+}
+.details-grid dd {
+  margin: 0;
+  font-family: var(--font-mono);
+}
+
+.booking-box {
+  border: 1px solid var(--border-dark);
+  border-radius: 10px;
+  padding: 16px;
+  margin-top: 16px;
+  background: var(--clay-paper);
+  color: var(--kiln);
+}
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+button {
+  background: var(--ember);
+  color: var(--feldspar);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-family: var(--font-body);
+  transition: background 0.15s ease;
+}
+button:hover:not(:disabled) {
+  background: var(--ember-dark);
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.link-button {
+  background: none;
+  color: var(--ember);
+  padding: 0;
+  text-decoration: underline;
+}
+.link-button:hover:not(:disabled) {
+  background: none;
+  color: var(--ember-dark);
+}
+
+.banner {
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin: 10px 0;
+  font-size: 0.9rem;
+}
+.banner--error {
+  background: var(--oxide-bg);
+  color: #f0c9c9;
+}
+.banner--success {
+  background: #364a2b;
+  color: #d7e6c9;
+}
+.banner--warning {
+  background: #4a3c1f;
+  color: #f0dcae;
+}
+.banner--cancelled {
+  background: var(--oxide-bg);
+  color: #f0c9c9;
+}
+
+.empty-state {
+  color: var(--muted);
+  padding: 24px 0;
+}
+
+.booking-card,
+.notification-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid var(--border-dark);
+  border-radius: 10px;
+  padding: 14px 16px;
+  background: var(--clay-paper);
+  color: var(--kiln);
+}
+.notification-card {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+.booking-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.notification-card__type {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--ember-dark);
+  font-weight: 600;
+  font-family: var(--font-mono);
+}
+.notification-card__time {
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-family: var(--font-mono);
+}
+.notification-card--cancelled_by_studio {
+  border-color: var(--oxide);
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal {
+  background: var(--clay-paper);
+  color: var(--kiln);
+  border-radius: 12px;
+  padding: 24px;
+  width: 320px;
+}
+.star-row {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+.star {
+  background: none;
+  font-size: 1.5rem;
+  color: #d9c9b3;
+  padding: 0;
+}
+.star--filled {
+  color: var(--ember);
+}
+.modal textarea {
+  width: 100%;
+  min-height: 60px;
+  margin-bottom: 12px;
+  font-family: var(--font-body);
+}
+.modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* ---------- Фото ---------- */
+
+/* ---------- Сигнатурный элемент: гончарные кольца ---------- */
+@keyframes spin-rings {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.throwing-rings {
+  position: absolute;
+  width: 130%;
+  height: 130%;
+  top: -15%;
+  left: -15%;
+  fill: none;
+  stroke: var(--ember);
+  stroke-width: 0.5;
+  opacity: 0.35;
+  animation: spin-rings 90s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .throwing-rings {
+    animation: none;
+  }
+}
+
+/* ---------- Разреженные экраны: профиль, пустые состояния ---------- */
+/* Раньше такие страницы были просто текстом в левом верхнем углу — на широком
+   экране это выглядело как недоделанная вёрстка. Теперь контент центрируется
+   по вертикали и горизонтали, а кольца на фоне — еле заметные — заполняют
+   пустоту, не отвлекая от текста. */
+.fill-page {
+  position: relative;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow: hidden;
+}
+.throwing-rings--ambient {
+  width: 460px;
+  height: 460px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.06;
+}
+
+.empty-page__content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.empty-page__icon {
+  width: 56px;
+  height: 56px;
+  color: var(--ember);
+  margin-bottom: 4px;
+}
+.empty-page__content h2 {
+  font-size: 1.3rem;
+}
+.empty-page__content p {
+  color: var(--muted);
+  margin: 0 0 6px;
+  line-height: 1.5;
+}
+
+.profile-card {
+  position: relative;
+  z-index: 1;
+  background: var(--clay-paper);
+  color: var(--kiln);
+  border-radius: 20px;
+  padding: 40px 48px;
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.profile-card__avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--ember);
+  color: var(--feldspar);
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+.profile-card h1 {
+  font-size: 1.5rem;
+  margin-bottom: 2px;
+}
+.profile-stats {
+  display: flex;
+  gap: 28px;
+  margin: 24px 0 20px;
+  justify-content: center;
+}
+.profile-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 72px;
+}
+.profile-stat__value {
+  font-family: var(--font-mono);
+  font-size: 1.7rem;
+  color: var(--ember-dark);
+}
+.profile-stat__label {
+  font-size: 0.76rem;
+  color: var(--muted);
+}
+.profile-progress {
+  width: 100%;
+  margin-top: 4px;
+}
+.profile-progress__track {
+  background: rgba(33, 29, 26, 0.12);
+  border-radius: 999px;
+  height: 8px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.profile-progress__fill {
+  background: var(--sage-dark);
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+/* ---------- Лендинг ---------- */
+.home {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+.home-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 0;
+}
+.home-nav__logo {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.4rem;
+}
+.home-nav__cta {
+  background: none;
+  color: var(--feldspar);
+  border: 1px solid var(--border-dark);
+}
+.home-nav__cta:hover {
+  background: var(--kiln-2);
+}
+
+.home-hero {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 40px;
+  align-items: center;
+  padding: 40px 0 80px;
+}
+.home-hero__text h1 {
+  font-size: 3rem;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin-bottom: 20px;
+}
+.home-hero__text p {
+  color: var(--muted);
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 28px;
+  max-width: 46ch;
+}
+.home-hero__visual {
+  position: relative;
+  aspect-ratio: 1 / 1;
+}
+.home-hero__photo {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 16px;
+}
+
+.home-section {
+  padding: 56px 0;
+  border-top: 1px solid var(--border-dark);
+}
+.home-section h2 {
+  font-size: 1.6rem;
+  margin-bottom: 32px;
+}
+
+.home-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+.home-step__num {
+  font-family: var(--font-mono);
+  color: var(--ember);
+  font-size: 0.9rem;
+}
+.home-step h3 {
+  font-size: 1.1rem;
+  margin: 8px 0;
+}
+.home-step p {
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.home-programs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+.program-card {
+  background: var(--kiln-2);
+  border: 1px solid var(--border-dark);
+  border-radius: 14px;
+  padding: 20px;
+}
+.program-card__photo {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+.program-card h3 {
+  font-size: 1.2rem;
+}
+.program-card p {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+}
+
+.masters-row {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+.master-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 120px;
+  text-align: center;
+}
+.master-card__photo {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  display: block;
+  border-radius: 50%;
+}
+.master-card span {
+  color: var(--sage);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+}
+
+.home-cta {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  margin: 40px 0 0;
+  min-height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.home-cta__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0;
+}
+.home-cta__content {
+  position: relative;
+  text-align: center;
+  background: rgba(33, 29, 26, 0.72);
+  padding: 40px 60px;
+  border-radius: 16px;
+}
+.home-cta__content h2 {
+  margin-bottom: 20px;
+}
+
+/* ---------- Регистрация: карточка-бирка ---------- */
+.register-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.register-ticket {
+  position: relative;
+  background: var(--clay-paper);
+  color: var(--kiln);
+  width: 100%;
+  max-width: 360px;
+  border-radius: 14px;
+  padding: 40px 32px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.register-ticket__hole {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--kiln);
+}
+.register-ticket__tear {
+  position: absolute;
+  top: 34px;
+  left: 12px;
+  right: 12px;
+  border-top: 1px dashed var(--muted);
+}
+.register-ticket h1 {
+  font-size: 1.5rem;
+  margin-top: 12px;
+  text-align: center;
+}
+.register-ticket__hint {
+  color: var(--muted);
+  font-size: 0.9rem;
+  text-align: center;
+  margin: -8px 0 0;
+}
+.register-ticket__footnote {
+  color: var(--muted);
+  font-size: 0.78rem;
+  text-align: center;
+  margin: 4px 0 0;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.field input {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-dark);
+  background: var(--feldspar);
+  color: var(--kiln);
+}
+.field input:focus {
+  outline: 2px solid var(--ember);
+  outline-offset: 1px;
+}
+
+@media (max-width: 720px) {
+  .home-hero {
+    grid-template-columns: 1fr;
+  }
+  .home-steps,
+  .home-programs {
+    grid-template-columns: 1fr;
+  }
+}

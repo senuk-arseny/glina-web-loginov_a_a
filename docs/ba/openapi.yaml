@@ -1,0 +1,232 @@
+openapi: 3.0.3
+info:
+  title: Gonchar Studio Client API
+  description: API для клиентского веб-приложения гончарной мастерской «Глина». Бэкенд — существующий black-box источник истины (в текущей поставке реализован как mock/api.ts).
+  version: 1.1.0
+
+paths:
+  /auth/login-or-register:
+    post:
+      operationId: loginOrRegister
+      summary: Вход без SMS — по имени и телефону
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, phone]
+              properties:
+                name: { type: string }
+                phone: { type: string }
+      responses:
+        '200':
+          description: Профиль клиента (создан или найден по номеру телефона)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientProfile'
+        '400':
+          description: Некорректное имя или телефон
+
+  /slots:
+    get:
+      operationId: listSlots
+      summary: Список слотов на ближайшие 7 дней (или по фильтру дат)
+      parameters:
+        - name: dateFrom
+          in: query
+          schema: { type: string, format: date }
+        - name: dateTo
+          in: query
+          schema: { type: string, format: date }
+      responses:
+        '200':
+          description: Список слотов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Slot'
+
+  /slots/{slotId}:
+    get:
+      operationId: getSlot
+      parameters:
+        - { name: slotId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: Детали слота
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SlotDetails'
+
+  /bookings:
+    post:
+      operationId: createBooking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [slotId]
+              properties:
+                slotId: { type: string }
+                equipmentRentalRequested: { type: boolean, default: false }
+      responses:
+        '201':
+          description: Бронь создана
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '409':
+          description: no_free_spots | already_booked | slot_cancelled
+
+  /bookings/{bookingId}/cancel:
+    post:
+      operationId: cancelBooking
+      parameters:
+        - { name: bookingId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: Бронь отменена, тип отмены определяет бэкенд
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, enum: [cancelled_by_client] }
+                  wasLate: { type: boolean }
+
+  /waitlist:
+    post:
+      operationId: joinWaitlist
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [slotId]
+              properties:
+                slotId: { type: string }
+      responses:
+        '201':
+          description: Добавлен в лист ожидания
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaitlistEntry'
+        '409':
+          description: slot_cancelled (слот отменён мастерской) | free_spots_available (в слоте есть свободные места — используйте обычную запись)
+
+  /reviews:
+    post:
+      operationId: createReview
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [bookingId, rating]
+              properties:
+                bookingId: { type: string }
+                rating: { type: integer, minimum: 1, maximum: 5 }
+                comment: { type: string }
+      responses:
+        '201':
+          description: Отзыв создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        '409':
+          description: already_reviewed (отзыв по этой брони уже есть) | not_completed (бронь ещё не завершена) | invalid_rating (рейтинг вне диапазона 1-5)
+
+  /notifications:
+    get:
+      operationId: listNotifications
+      responses:
+        '200':
+          description: Список уведомлений клиента
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notification'
+
+components:
+  schemas:
+    Slot:
+      type: object
+      properties:
+        id: { type: string }
+        programName: { type: string }
+        masterName: { type: string }
+        masterAvgRating: { type: number }
+        startTime: { type: string, format: date-time }
+        freeSpots: { type: integer, description: "Вычисляется бэкендом, не хранится статично" }
+        status: { type: string, enum: [active, cancelled_by_studio] }
+
+    SlotDetails:
+      allOf:
+        - $ref: '#/components/schemas/Slot'
+        - type: object
+          properties:
+            equipmentRental:
+              type: object
+              properties:
+                availableSets: { type: integer }
+                pricePerSet: { type: number }
+
+    Booking:
+      type: object
+      properties:
+        id: { type: string }
+        slotId: { type: string }
+        clientId: { type: string }
+        status:
+          type: string
+          enum: [active, cancelled_by_client, cancelled_by_studio, completed]
+        wasLateCancellation: { type: boolean, nullable: true }
+
+    WaitlistEntry:
+      type: object
+      properties:
+        id: { type: string }
+        slotId: { type: string }
+        status: { type: string, enum: [waiting, notified, converted, expired] }
+        position: { type: integer, description: "Вычисляется на лету" }
+
+    Review:
+      type: object
+      properties:
+        id: { type: string }
+        bookingId: { type: string }
+        rating: { type: integer }
+        comment: { type: string, nullable: true }
+
+    ClientProfile:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        contact: { type: string }
+        isRegular: { type: boolean }
+        visitedCount: { type: integer }
+
+    Notification:
+      type: object
+      properties:
+        id: { type: string }
+        type:
+          type: string
+          enum: [booking_confirmed, reminder, cancelled_by_studio, waitlist_spot_available]
+        message: { type: string }
+        read: { type: boolean }
